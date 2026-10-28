@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Chatbot RH</title>
+<style>
+body{font-family:system-ui,sans-serif;max-width:720px;margin:0 auto;padding:16px;background:#f6f7f9;color:#1c1e21}
+h1{font-size:20px}#log{height:60vh;overflow:auto;background:#fff;border:1px solid #dde;border-radius:10px;padding:12px}
+.m{margin:8px 0;padding:8px 12px;border-radius:10px;max-width:85%;white-space:pre-wrap}
+.u{background:#2563eb;color:#fff;margin-left:auto}.b{background:#eef0f4}.s{font-size:12px;color:#666;margin-top:4px}
+form{display:flex;gap:8px;margin-top:12px}input{flex:1;padding:10px;border:1px solid #ccd;border-radius:8px}
+button{padding:10px 16px;border:0;border-radius:8px;background:#2563eb;color:#fff;cursor:pointer}
+</style></head><body>
+<h1>Assistant RH</h1>
+<div id="log"><div class="m b">Bonjour ! Posez-moi une question sur les congés, le télétravail, les notes de frais ou la formation.</div></div>
+<form id="f"><input id="q" placeholder="Ex : Combien de jours de télétravail par semaine ?" autocomplete="off" required minlength="3"><button>Envoyer</button></form>
+<script>
+const log=document.getElementById('log');
+function add(t,c,s){const d=document.createElement('div');d.className='m '+c;d.textContent=t;
+ if(s){const e=document.createElement('div');e.className='s';e.textContent=s;d.appendChild(e)}log.appendChild(d);log.scrollTop=log.scrollHeight}
+document.getElementById('f').onsubmit=async e=>{e.preventDefault();const q=document.getElementById('q');const v=q.value;q.value='';add(v,'u');
+ try{const r=await fetch('/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:v})});
+ const j=await r.json();add(j.answer,'b',j.sources&&j.sources.length?'Sources : '+[...new Set(j.sources.map(s=>s.file+(s.section?' > '+s.section:'')))].join(', '):'')}
+ catch(err){add('Erreur serveur.','b')}}
+</script></body></html>
